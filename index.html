@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Pelanggaran Smanesa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&amp;family=Source+Sans+3:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Source Sans 3', sans-serif;
+    }
+    .font-heading {
+      font-family: 'Crimson Text', serif;
+    }
+    :root {
+      --maroon: #722F37;
+      --maroon-dark: #5D0F1C;
+      --maroon-light: #8B0000;
+      --gold: #D4AF37;
+      --gold-dark: #B08D57;
+      --bg-warm: #FAF9F6;
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --success: #2E8B57;
+      --warning: #FF8C00;
+      --danger: #C41E3A;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--maroon); border-radius: 3px; }
+
+    /* Animations */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.3); }
+      50% { box-shadow: 0 0 0 8px rgba(212,175,55,0); }
+    }
+    .anim-fade-up {
+      animation: fadeSlideUp 0.5s ease-out forwards;
+    }
+    .anim-fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    .stagger-1 { animation-delay: 0.05s; opacity: 0; }
+    .stagger-2 { animation-delay: 0.12s; opacity: 0; }
+    .stagger-3 { animation-delay: 0.19s; opacity: 0; }
+    .stagger-4 { animation-delay: 0.26s; opacity: 0; }
+    .stagger-5 { animation-delay: 0.33s; opacity: 0; }
+
+    /* Gold accent line */
+    .gold-line {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* Card hover */
+    .stat-card {
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      border-bottom: 3px solid transparent;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-bottom-color: var(--gold);
+      box-shadow: 0 12px 28px rgba(93,15,28,0.12);
+    }
+
+    /* Table */
+    .table-header {
+      background: linear-gradient(135deg, var(--maroon-dark), var(--maroon));
+    }
+    .table-row-even { background-color: #faf8f5; }
+    .table-row-odd { background-color: #ffffff; }
+    .table-row:hover { background-color: #f5ede4 !important; }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--maroon), var(--maroon-dark));
+      color: #fff;
+      transition: all 0.25s ease;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--maroon-dark), #4a0a14);
+      box-shadow: 0 4px 14px rgba(93,15,28,0.3);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--maroon);
+      color: var(--maroon);
+      transition: all 0.25s ease;
+    }
+    .btn-secondary:hover {
+      background: var(--maroon);
+      color: #fff;
+    }
+    .btn-accent {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: var(--maroon-dark);
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+    .btn-accent:hover {
+      box-shadow: 0 4px 14px rgba(212,175,55,0.4);
+      animation: pulse-gold 1.5s infinite;
+    }
+
+    /* Form */
+    .form-input {
+      border: 1.5px solid #d1c9c0;
+      transition: all 0.25s ease;
+      background: #fff;
+    }
+    .form-input:focus {
+      border-color: var(--maroon);
+      box-shadow: 0 0 0 3px rgba(114,47,55,0.12);
+      outline: none;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      background: rgba(30,10,12,0.55);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Sidebar */
+    .sidebar-item {
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-item:hover, .sidebar-item.active {
+      background: rgba(255,255,255,0.08);
+      border-left-color: var(--gold);
+    }
+    .sidebar-item.active {
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* Badge */
+    .badge-ringan { background: #e8f5e9; color: var(--success); }
+    .badge-sedang { background: #fff3e0; color: var(--warning); }
+    .badge-berat { background: #fce4ec; color: var(--danger); }
+
+    /* Toast */
+    .toast {
+      animation: fadeSlideUp 0.35s ease-out;
+    }
+
+    /* Pattern overlay for header */
+    .pattern-overlay {
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(212,175,55,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.04) 0%, transparent 40%),
+        linear-gradient(135deg, rgba(0,0,0,0.15) 0%, transparent 50%);
+    }
+
+    /* Loading spinner */
+    .spinner {
+      border: 3px solid rgba(114,47,55,0.15);
+      border-top-color: var(--maroon);
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Confirm inline */
+    .confirm-delete {
+      animation: fadeIn 0.2s ease-out;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full" style="background-color: var(--bg-warm); color: var(--text-primary);">
+  <div id="app-root" class="h-full w-full flex overflow-auto"><!-- Sidebar -->
+   <aside id="sidebar" class="w-64 flex-shrink-0 flex flex-col" style="background: linear-gradient(180deg, #5D0F1C 0%, #722F37 60%, #8B3A42 100%); min-height: 100%;"><!-- Logo Area -->
+    <div class="p-5 pb-3">
+     <div class="flex items-center gap-2.5 mb-1"><!-- School Logo -->
+      <div class="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden" style="background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"><img id="school-logo" src="https://smasa-magetan.sch.id/wp-content/uploads/2023/06/LOGO-SMA-NEGERI-1-MAGETAN-258x300.png" alt="Logo Sekolah" loading="lazy" class="w-full h-full object-cover" onerror="console.error('Logo failed to load:', this.src); this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"> <!-- Fallback SVG (hidden by default) -->
+       <div id="logo-fallback" style="display: none;" class="w-full h-full flex items-center justify-center">
+        <svg width="32" height="32" viewbox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#5D0F1C" opacity="0.9" /> <path d="M12 4L8 10h8z" fill="#D4AF37" /> <path d="M8 10L6 18h12l-2-8z" fill="#5D0F1C" /> <circle cx="12" cy="6.5" r="1.5" fill="#D4AF37" /> <line x1="12" y1="18" x2="12" y2="20" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+       </div>
+      </div>
+      <div>
+       <div id="sidebar-app-title" class="font-heading text-white text-base font-bold leading-tight">
+        E-Pelanggaran
+       </div>
+       <div id="sidebar-school-name" class="text-xs font-medium tracking-wide" style="color: var(--gold);">
+        SMANESA
+       </div>
+      </div>
+     </div>
+     <div class="gold-line mt-3 opacity-50"></div>
+    </div><!-- Nav -->
+    <nav class="flex-1 px-3 py-2 space-y-1" role="navigation" aria-label="Menu Utama"><button class="sidebar-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium" data-page="dashboard" onclick="navigateTo('dashboard')">
+      <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg> Dashboard </button> <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium opacity-75" data-page="records" onclick="navigateTo('records')">
+      <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+      </svg> Data Pelanggaran </button> <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium opacity-75" data-page="add" onclick="navigateTo('add')">
+      <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+      </svg> Tambah Pelanggaran </button>
+    </nav><!-- Footer -->
+    <div class="p-4 mt-auto">
+     <div class="gold-line mb-3 opacity-30"></div>
+     <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark));">
+       A
+      </div>
+      <div>
+       <div class="text-white text-xs font-semibold">
+        Administrator
+       </div>
+       <div class="text-xs" style="color: rgba(255,255,255,0.45);">
+        Kesiswaan
+       </div>
+      </div>
+     </div>
+    </div>
+   </aside><!-- Main Content -->
+   <div class="flex-1 flex flex-col overflow-auto"><!-- Top Header Bar -->
+    <header class="w-full flex-shrink-0 relative overflow-hidden" style="background: linear-gradient(135deg, #5D0F1C, #722F37, #8B3A42);">
+     <div class="pattern-overlay absolute inset-0"></div>
+     <div class="relative z-10 px-6 py-4 flex items-center justify-between">
+      <div>
+       <h1 id="header-greeting" class="font-heading text-white text-xl font-bold">Selamat Datang, Admin</h1>
+       <p class="text-xs mt-0.5" style="color: rgba(255,255,255,0.6);" id="header-date"></p>
+      </div>
+      <div class="flex items-center gap-3"><!-- Notification bell --> <button class="relative p-2 rounded-lg hover:bg-white/10 transition" aria-label="Notifikasi">
+        <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+         <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" />
+        </svg><span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-white text-[9px] font-bold flex items-center justify-center" style="background: var(--danger);" id="notif-badge">0</span> </button>
+      </div>
+     </div>
+     <div class="gold-line relative z-10"></div>
+    </header><!-- Page Content -->
+    <main id="page-content" class="flex-1 p-6 overflow-auto" role="main"><!-- Filled by JS -->
+    </main>
+   </div>
+  </div><!-- Modal Container -->
+  <div id="modal-container" class="fixed inset-0 z-50 hidden"></div><!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2" role="status" aria-live="polite"></div>
+  <script>
+    // ============ STATE ============
+    let allRecords = [];
+    let currentPage = 'dashboard';
+    let deleteConfirmId = null;
+
+    const defaultConfig = {
+      school_name: 'SMA Negeri 1 Magetan',
+      app_title: 'E-Pelanggaran',
+      dashboard_greeting: 'Selamat Datang, Admin',
+      background_color: '#FAF9F6',
+      surface_color: '#FFFFFF',
+      text_color: '#333333',
+      primary_action_color: '#722F37',
+      secondary_action_color: '#D4AF37',
+      font_family: 'Crimson Text',
+      font_size: 16
+    };
+
+    // ============ HELPERS ============
+    function formatDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        success: 'background: var(--success);',
+        error: 'background: var(--danger);',
+        warning: 'background: var(--warning);'
+      };
+      toast.className = 'toast px-4 py-2.5 rounded-lg text-white text-sm font-medium shadow-lg flex items-center gap-2';
+      toast.style.cssText = colors[type] || colors.success;
+      const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠'
+      };
+      toast.innerHTML = `<span class="font-bold">${icons[type] || '✓'}</span> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function getCategoryBadge(cat) {
+      const map = {
+        'Ringan': 'badge-ringan',
+        'Sedang': 'badge-sedang',
+        'Berat': 'badge-berat'
+      };
+      return map[cat] || 'badge-ringan';
+    }
+
+    function getStatusLabel(status) {
+      const map = {
+        'Diproses': { bg: '#fff3e0', color: 'var(--warning)', icon: '◔' },
+        'Selesai': { bg: '#e8f5e9', color: 'var(--success)', icon: '✓' },
+        'Ditunda': { bg: '#f3e5f5', color: '#7B1FA2', icon: '⏸' }
+      };
+      return map[status] || map['Diproses'];
+    }
+
+    // ============ DATE ============
+    function setHeaderDate() {
+      const now = new Date();
+      const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('header-date').textContent = now.toLocaleDateString('id-ID', opts);
+    }
+    setHeaderDate();
+
+    // ============ NAVIGATION ============
+    function navigateTo(page) {
+      currentPage = page;
+      // Update sidebar active state
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        const isActive = item.dataset.page === page;
+        item.classList.toggle('active', isActive);
+        item.style.opacity = isActive ? '1' : '0.75';
+      });
+      renderPage();
+    }
+
+    // ============ RENDER PAGES ============
+    function renderPage() {
+      const content = document.getElementById('page-content');
+      switch (currentPage) {
+        case 'dashboard': renderDashboard(content); break;
+        case 'records': renderRecords(content); break;
+        case 'add': renderAddForm(content); break;
+        default: renderDashboard(content);
+      }
+    }
+
+    // ---- Dashboard ----
+    function renderDashboard(container) {
+      const total = allRecords.length;
+      const now = new Date();
+      const thisMonth = allRecords.filter(r => {
+        const d = new Date(r.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).length;
+      const berat = allRecords.filter(r => r.violation_category === 'Berat').length;
+      const diproses = allRecords.filter(r => r.status === 'Diproses').length;
+      const totalPoints = allRecords.reduce((s, r) => s + (r.points || 0), 0);
+
+      // Recent 5 records
+      const recent = [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
+      // Category counts
+      const catCounts = { Ringan: 0, Sedang: 0, Berat: 0 };
+      allRecords.forEach(r => { if (catCounts[r.violation_category] !== undefined) catCounts[r.violation_category]++; });
+
+      container.innerHTML = `
+        <div class="space-y-6">
+          <!-- Stats -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            ${[
+              { label: 'Total Pelanggaran', value: total, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--maroon)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`, color: 'var(--maroon)' },
+              { label: 'Bulan Ini', value: thisMonth, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`, color: 'var(--gold)' },
+              { label: 'Pelanggaran Berat', value: berat, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`, color: 'var(--danger)' },
+              { label: 'Sedang Diproses', value: diproses, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`, color: 'var(--warning)' }
+            ].map((s, i) => `
+              <div class="stat-card bg-white rounded-xl p-5 shadow-sm anim-fade-up stagger-${i+1}" style="border-left: 4px solid ${s.color};">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">${s.label}</div>
+                    <div class="text-3xl font-bold font-heading" style="color: var(--text-primary);">${s.value}</div>
+                  </div>
+                  <div class="p-2 rounded-lg" style="background: ${s.color}11;">${s.icon}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Total Points Bar -->
+          <div class="bg-white rounded-xl p-5 shadow-sm anim-fade-up stagger-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-heading font-bold text-lg" style="color: var(--text-primary);">Ringkasan Poin Pelanggaran</h3>
+              <span class="text-2xl font-bold font-heading" style="color: var(--maroon);">${totalPoints} <span class="text-sm font-normal" style="color: var(--text-secondary);">poin</span></span>
+            </div>
+            <div class="flex gap-2 h-7 rounded-full overflow-hidden" style="background: #f0ebe4;">
+              ${Object.entries(catCounts).map(([cat, count]) => {
+                const pct = total > 0 ? Math.max((count / total) * 100, count > 0 ? 8 : 0) : 0;
+                const colors = { Ringan: 'var(--success)', Sedang: 'var(--warning)', Berat: 'var(--danger)' };
+                return count > 0 ? `<div class="flex items-center justify-center text-white text-xs font-bold rounded-full" style="width: ${pct}%; background: ${colors[cat]}; min-width: 40px;">${cat} (${count})</div>` : '';
+              }).join('')}
+              ${total === 0 ? '<div class="flex-1 flex items-center justify-center text-xs" style="color: var(--text-secondary);">Belum ada data</div>' : ''}
+            </div>
+          </div>
+
+          <!-- Recent Table + Quick Add -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- Recent Violations -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm overflow-hidden anim-fade-up stagger-3">
+              <div class="table-header px-5 py-3 flex items-center justify-between">
+                <h3 class="font-heading font-bold text-white text-base">Pelanggaran Terbaru</h3>
+                <button class="text-xs px-3 py-1 rounded-full font-medium" style="background: rgba(255,255,255,0.15); color: white;" onclick="navigateTo('records')">Lihat Semua →</button>
+              </div>
+              ${recent.length === 0 ? `
+                <div class="p-10 text-center">
+                  <div class="text-5xl mb-3 opacity-30">📋</div>
+                  <div class="font-heading text-lg font-semibold" style="color: var(--text-secondary);">Belum Ada Pelanggaran</div>
+                  <div class="text-sm mt-1" style="color: var(--text-secondary);">Data pelanggaran akan muncul di sini</div>
+                  <button class="btn-accent px-5 py-2 rounded-lg text-sm mt-4" onclick="navigateTo('add')">+ Tambah Pelanggaran</button>
+                </div>
+              ` : `
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr style="background: #f8f4ef;">
+                        <th class="text-left px-4 py-2.5 font-semibold text-xs uppercase tracking-wider" style="color: var(--text-secondary);">Siswa</th>
+                        <th class="text-left px-4 py-2.5 font-semibold text-xs uppercase tracking-wider" style="color: var(--text-secondary);">Pelanggaran</th>
+                        <th class="text-left px-4 py-2.5 font-semibold text-xs uppercase tracking-wider" style="color: var(--text-secondary);">Kategori</th>
+                        <th class="text-left px-4 py-2.5 font-semibold text-xs uppercase tracking-wider" style="color: var(--text-secondary);">Poin</th>
+                        <th class="text-left px-4 py-2.5 font-semibold text-xs uppercase tracking-wider" style="color: var(--text-secondary);">Tanggal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${recent.map((r, i) => `
+                        <tr class="table-row ${i % 2 === 0 ? 'table-row-even' : 'table-row-odd'} transition-colors cursor-default">
+                          <td class="px-4 py-2.5 font-medium">${r.student_name || '-'}</td>
+                          <td class="px-4 py-2.5">${r.violation_type || '-'}</td>
+                          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded-full text-xs font-semibold ${getCategoryBadge(r.violation_category)}">${r.violation_category || '-'}</span></td>
+                          <td class="px-4 py-2.5 font-bold" style="color: var(--maroon);">${r.points || 0}</td>
+                          <td class="px-4 py-2.5 text-xs" style="color: var(--text-secondary);">${formatDate(r.date)}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `}
+            </div>
+
+            <!-- Quick Stats Card -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden anim-fade-up stagger-4">
+              <div class="p-5" style="background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(114,47,55,0.05));">
+                <h3 class="font-heading font-bold text-base mb-4" style="color: var(--text-primary);">Distribusi Kategori</h3>
+                <div class="space-y-3">
+                  ${[
+                    { label: 'Ringan', count: catCounts.Ringan, color: 'var(--success)', emoji: '🟢' },
+                    { label: 'Sedang', count: catCounts.Sedang, color: 'var(--warning)', emoji: '🟡' },
+                    { label: 'Berat', count: catCounts.Berat, color: 'var(--danger)', emoji: '🔴' }
+                  ].map(c => {
+                    const pct = total > 0 ? (c.count / total) * 100 : 0;
+                    return `
+                      <div>
+                        <div class="flex items-center justify-between mb-1">
+                          <span class="text-sm font-medium">${c.emoji} ${c.label}</span>
+                          <span class="text-sm font-bold" style="color: ${c.color};">${c.count}</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full" style="background: #f0ebe4;">
+                          <div class="h-full rounded-full transition-all" style="width: ${pct}%; background: ${c.color}; min-width: ${c.count > 0 ? '4px' : '0'};"></div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+              <div class="p-5 border-t" style="border-color: #f0ebe4;">
+                <button class="btn-accent w-full py-2.5 rounded-lg text-sm flex items-center justify-center gap-2" onclick="navigateTo('add')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  Tambah Pelanggaran Baru
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Update notification badge
+      document.getElementById('notif-badge').textContent = diproses;
+    }
+
+    // ---- Records Page ----
+    function renderRecords(container) {
+      const sorted = [...allRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      container.innerHTML = `
+        <div class="space-y-5 anim-fade-in">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="font-heading text-2xl font-bold" style="color: var(--text-primary);">Data Pelanggaran</h2>
+              <p class="text-sm mt-0.5" style="color: var(--text-secondary);">Menampilkan ${sorted.length} catatan pelanggaran</p>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-accent px-4 py-2 rounded-lg text-sm flex items-center gap-2" onclick="navigateTo('add')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Tambah Baru
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="bg-white rounded-xl p-4 shadow-sm flex flex-col sm:flex-row gap-3">
+            <div class="flex-1">
+              <label for="search-input" class="sr-only">Cari siswa</label>
+              <input id="search-input" type="text" placeholder="🔍 Cari nama siswa..." class="form-input w-full px-4 py-2 rounded-lg text-sm" oninput="filterRecords()">
+            </div>
+            <div>
+              <label for="filter-category" class="sr-only">Filter kategori</label>
+              <select id="filter-category" class="form-input px-4 py-2 rounded-lg text-sm" onchange="filterRecords()">
+                <option value="">Semua Kategori</option>
+                <option value="Ringan">Ringan</option>
+                <option value="Sedang">Sedang</option>
+                <option value="Berat">Berat</option>
+              </select>
+            </div>
+            <div>
+              <label for="filter-status" class="sr-only">Filter status</label>
+              <select id="filter-status" class="form-input px-4 py-2 rounded-lg text-sm" onchange="filterRecords()">
+                <option value="">Semua Status</option>
+                <option value="Diproses">Diproses</option>
+                <option value="Selesai">Selesai</option>
+                <option value="Ditunda">Ditunda</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="table-header">
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">No</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Nama Siswa</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Kelas</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Pelanggaran</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Kategori</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Poin</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Pelapor</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Tanggal</th>
+                    <th class="text-left px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Status</th>
+                    <th class="text-center px-4 py-3 text-white font-semibold text-xs uppercase tracking-wider">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="records-tbody">
+                  ${sorted.length === 0 ? `
+                    <tr><td colspan="10" class="px-4 py-12 text-center">
+                      <div class="text-4xl mb-2 opacity-30">📋</div>
+                      <div class="font-heading text-lg font-semibold" style="color: var(--text-secondary);">Belum Ada Data</div>
+                      <div class="text-sm" style="color: var(--text-secondary);">Mulai tambahkan pelanggaran pertama</div>
+                    </td></tr>
+                  ` : sorted.map((r, i) => renderRecordRow(r, i)).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRecordRow(r, i) {
+      const st = getStatusLabel(r.status);
+      const isConfirming = deleteConfirmId === r.__backendId;
+      return `
+        <tr class="table-row ${i % 2 === 0 ? 'table-row-even' : 'table-row-odd'} transition-colors" data-record-id="${r.__backendId}">
+          <td class="px-4 py-2.5 font-medium" style="color: var(--text-secondary);">${i + 1}</td>
+          <td class="px-4 py-2.5 font-semibold">${r.student_name || '-'}</td>
+          <td class="px-4 py-2.5">${r.student_class || '-'}</td>
+          <td class="px-4 py-2.5 max-w-[180px] truncate">${r.violation_type || '-'}</td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded-full text-xs font-semibold ${getCategoryBadge(r.violation_category)}">${r.violation_category || '-'}</span></td>
+          <td class="px-4 py-2.5 font-bold" style="color: var(--maroon);">${r.points || 0}</td>
+          <td class="px-4 py-2.5 text-xs">${r.reporter || '-'}</td>
+          <td class="px-4 py-2.5 text-xs" style="color: var(--text-secondary);">${formatDate(r.date)}</td>
+          <td class="px-4 py-2.5">
+            <span class="px-2 py-0.5 rounded-full text-xs font-semibold inline-flex items-center gap-1" style="background: ${st.bg}; color: ${st.color};">${st.icon} ${r.status || '-'}</span>
+          </td>
+          <td class="px-4 py-2.5 text-center">
+            ${isConfirming ? `
+              <div class="confirm-delete flex items-center gap-1 justify-center">
+                <button class="px-2 py-1 rounded text-xs font-bold text-white" style="background: var(--danger);" onclick="confirmDelete('${r.__backendId}')">Hapus!</button>
+                <button class="px-2 py-1 rounded text-xs font-medium" style="background: #e0e0e0; color: #333;" onclick="cancelDelete()">Batal</button>
+              </div>
+            ` : `
+              <div class="flex items-center gap-1 justify-center">
+                <button class="p-1.5 rounded-lg hover:bg-gray-100 transition" onclick="openViewModal('${r.__backendId}')" title="Lihat Detail" aria-label="Lihat detail ${r.student_name}">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--maroon)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="p-1.5 rounded-lg hover:bg-gray-100 transition" onclick="openEditModal('${r.__backendId}')" title="Edit" aria-label="Edit data ${r.student_name}">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold-dark)" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="p-1.5 rounded-lg hover:bg-red-50 transition" onclick="requestDelete('${r.__backendId}')" title="Hapus" aria-label="Hapus data ${r.student_name}">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                </button>
+              </div>
+            `}
+          </td>
+        </tr>
+      `;
+    }
+
+    function filterRecords() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const cat = document.getElementById('filter-category').value;
+      const status = document.getElementById('filter-status').value;
+
+      let filtered = allRecords.filter(r => {
+        const matchName = !search || (r.student_name || '').toLowerCase().includes(search);
+        const matchCat = !cat || r.violation_category === cat;
+        const matchStatus = !status || r.status === status;
+        return matchName && matchCat && matchStatus;
+      }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      const tbody = document.getElementById('records-tbody');
+      if (!tbody) return;
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="px-4 py-12 text-center">
+          <div class="text-4xl mb-2 opacity-30">🔍</div>
+          <div class="font-heading text-base font-semibold" style="color: var(--text-secondary);">Tidak ditemukan</div>
+        </td></tr>`;
+      } else {
+        tbody.innerHTML = filtered.map((r, i) => renderRecordRow(r, i)).join('');
+      }
+    }
+
+    // ---- Add Form ----
+    function renderAddForm(container) {
+      container.innerHTML = `
+        <div class="max-w-2xl mx-auto anim-fade-in">
+          <div class="flex items-center gap-3 mb-5">
+            <button class="p-2 rounded-lg hover:bg-gray-100 transition" onclick="navigateTo('dashboard')" aria-label="Kembali">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            </button>
+            <div>
+              <h2 class="font-heading text-2xl font-bold" style="color: var(--text-primary);">Tambah Pelanggaran</h2>
+              <p class="text-sm" style="color: var(--text-secondary);">Isi formulir untuk mencatat pelanggaran baru</p>
+            </div>
+          </div>
+
+          <form id="add-form" class="bg-white rounded-xl shadow-sm overflow-hidden" onsubmit="handleAddSubmit(event)">
+            <div class="p-6 space-y-4">
+              <!-- Row 1 -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="f-name" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Nama Siswa <span style="color: var(--danger);">*</span></label>
+                  <input id="f-name" type="text" required class="form-input w-full px-4 py-2.5 rounded-lg text-sm" placeholder="Masukkan nama lengkap">
+                </div>
+                <div>
+                  <label for="f-class" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Kelas <span style="color: var(--danger);">*</span></label>
+                  <input id="f-class" type="text" required class="form-input w-full px-4 py-2.5 rounded-lg text-sm" placeholder="Contoh: XII IPA 1">
+                </div>
+              </div>
+
+              <!-- Row 2 -->
+              <div>
+                <label for="f-type" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Jenis Pelanggaran <span style="color: var(--danger);">*</span></label>
+                <input id="f-type" type="text" required class="form-input w-full px-4 py-2.5 rounded-lg text-sm" placeholder="Contoh: Terlambat masuk kelas">
+              </div>
+
+              <!-- Row 3 -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label for="f-category" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Kategori <span style="color: var(--danger);">*</span></label>
+                  <select id="f-category" required class="form-input w-full px-4 py-2.5 rounded-lg text-sm">
+                    <option value="">Pilih Kategori</option>
+                    <option value="Ringan">Ringan</option>
+                    <option value="Sedang">Sedang</option>
+                    <option value="Berat">Berat</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="f-points" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Poin <span style="color: var(--danger);">*</span></label>
+                  <input id="f-points" type="number" required min="1" max="100" class="form-input w-full px-4 py-2.5 rounded-lg text-sm" placeholder="1-100">
+                </div>
+                <div>
+                  <label for="f-status" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Status</label>
+                  <select id="f-status" class="form-input w-full px-4 py-2.5 rounded-lg text-sm">
+                    <option value="Diproses">Diproses</option>
+                    <option value="Selesai">Selesai</option>
+                    <option value="Ditunda">Ditunda</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Row 4 -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="f-reporter" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Pelapor <span style="color: var(--danger);">*</span></label>
+                  <input id="f-reporter" type="text" required class="form-input w-full px-4 py-2.5 rounded-lg text-sm" placeholder="Nama guru/wali kelas">
+                </div>
+                <div>
+                  <label for="f-date" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Tanggal <span style="color: var(--danger);">*</span></label>
+                  <input id="f-date" type="date" required class="form-input w-full px-4 py-2.5 rounded-lg text-sm">
+                </div>
+              </div>
+
+              <!-- Notes -->
+              <div>
+                <label for="f-notes" class="block text-sm font-semibold mb-1.5" style="color: var(--text-primary);">Keterangan Tambahan</label>
+                <textarea id="f-notes" rows="3" class="form-input w-full px-4 py-2.5 rounded-lg text-sm" placeholder="Detail tambahan pelanggaran (opsional)"></textarea>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="px-6 py-4 flex items-center justify-end gap-3" style="background: #faf8f5; border-top: 1px solid #f0ebe4;">
+              <button type="button" class="btn-secondary px-5 py-2.5 rounded-lg text-sm" onclick="navigateTo('dashboard')">Batal</button>
+              <button type="submit" id="submit-btn" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Simpan Data
+              </button>
+            </div>
+          </form>
+        </div>
+      `;
+
+      // Default date to today
+      document.getElementById('f-date').valueAsDate = new Date();
+    }
+
+    async function handleAddSubmit(e) {
+      e.preventDefault();
+
+      if (allRecords.length >= 999) {
+        showToast('Batas maksimum 999 data telah tercapai. Hapus beberapa data terlebih dahulu.', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+
+      const data = {
+        student_name: document.getElementById('f-name').value.trim(),
+        student_class: document.getElementById('f-class').value.trim(),
+        violation_type: document.getElementById('f-type').value.trim(),
+        violation_category: document.getElementById('f-category').value,
+        points: parseInt(document.getElementById('f-points').value) || 0,
+        reporter: document.getElementById('f-reporter').value.trim(),
+        date: new Date(document.getElementById('f-date').value).toISOString(),
+        notes: document.getElementById('f-notes').value.trim(),
+        status: document.getElementById('f-status').value
+      };
+
+      const result = await window.dataSdk.create(data);
+      if (result.isOk) {
+        showToast('Pelanggaran berhasil dicatat!', 'success');
+        navigateTo('records');
+      } else {
+        showToast('Gagal menyimpan data. Silakan coba lagi.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan Data`;
+      }
+    }
+
+    // ---- Delete ----
+    function requestDelete(backendId) {
+      deleteConfirmId = backendId;
+      if (currentPage === 'records') renderRecords(document.getElementById('page-content'));
+    }
+    function cancelDelete() {
+      deleteConfirmId = null;
+      if (currentPage === 'records') renderRecords(document.getElementById('page-content'));
+    }
+    async function confirmDelete(backendId) {
+      const record = allRecords.find(r => r.__backendId === backendId);
+      if (!record) return;
+      const result = await window.dataSdk.delete(record);
+      deleteConfirmId = null;
+      if (result.isOk) {
+        showToast('Data berhasil dihapus.', 'success');
+      } else {
+        showToast('Gagal menghapus data.', 'error');
+      }
+    }
+
+    // ---- View Modal ----
+    function openViewModal(backendId) {
+      const r = allRecords.find(rec => rec.__backendId === backendId);
+      if (!r) return;
+      const st = getStatusLabel(r.status);
+      const modal = document.getElementById('modal-container');
+      modal.classList.remove('hidden');
+      modal.innerHTML = `
+        <div class="modal-overlay fixed inset-0 anim-fade-in" onclick="closeModal()"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4 z-10 pointer-events-none">
+          <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg pointer-events-auto anim-fade-up overflow-hidden" role="dialog" aria-modal="true" aria-label="Detail Pelanggaran">
+            <div class="table-header px-6 py-4 flex items-center justify-between">
+              <h3 class="font-heading font-bold text-white text-lg">Detail Pelanggaran</h3>
+              <button class="text-white/60 hover:text-white transition p-1" onclick="closeModal()" aria-label="Tutup">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="p-6 space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Nama Siswa</div>
+                  <div class="font-semibold">${r.student_name || '-'}</div>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Kelas</div>
+                  <div class="font-semibold">${r.student_class || '-'}</div>
+                </div>
+                <div class="col-span-2">
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Jenis Pelanggaran</div>
+                  <div class="font-semibold">${r.violation_type || '-'}</div>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Kategori</div>
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${getCategoryBadge(r.violation_category)}">${r.violation_category || '-'}</span>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Poin</div>
+                  <div class="text-xl font-bold font-heading" style="color: var(--maroon);">${r.points || 0}</div>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Pelapor</div>
+                  <div class="font-semibold">${r.reporter || '-'}</div>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Tanggal</div>
+                  <div>${formatDate(r.date)}</div>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Status</div>
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1" style="background: ${st.bg}; color: ${st.color};">${st.icon} ${r.status || '-'}</span>
+                </div>
+                ${r.notes ? `
+                  <div class="col-span-2">
+                    <div class="text-xs font-semibold uppercase tracking-wider mb-0.5" style="color: var(--text-secondary);">Keterangan</div>
+                    <div class="text-sm p-3 rounded-lg" style="background: #faf8f5; color: var(--text-primary);">${r.notes}</div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            <div class="px-6 py-4 flex justify-end" style="background: #faf8f5; border-top: 1px solid #f0ebe4;">
+              <button class="btn-secondary px-5 py-2 rounded-lg text-sm" onclick="closeModal()">Tutup</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Edit Modal ----
+    function openEditModal(backendId) {
+      const r = allRecords.find(rec => rec.__backendId === backendId);
+      if (!r) return;
+      const modal = document.getElementById('modal-container');
+      modal.classList.remove('hidden');
+      modal.innerHTML = `
+        <div class="modal-overlay fixed inset-0 anim-fade-in" onclick="closeModal()"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4 z-10 pointer-events-none">
+          <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg pointer-events-auto anim-fade-up overflow-hidden" role="dialog" aria-modal="true" aria-label="Edit Pelanggaran">
+            <div class="table-header px-6 py-4 flex items-center justify-between">
+              <h3 class="font-heading font-bold text-white text-lg">Edit Pelanggaran</h3>
+              <button class="text-white/60 hover:text-white transition p-1" onclick="closeModal()" aria-label="Tutup">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <form id="edit-form" class="p-6 space-y-4" onsubmit="handleEditSubmit(event, '${backendId}')">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="e-name" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Nama Siswa</label>
+                  <input id="e-name" type="text" required value="${r.student_name || ''}" class="form-input w-full px-3 py-2 rounded-lg text-sm">
+                </div>
+                <div>
+                  <label for="e-class" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Kelas</label>
+                  <input id="e-class" type="text" required value="${r.student_class || ''}" class="form-input w-full px-3 py-2 rounded-lg text-sm">
+                </div>
+              </div>
+              <div>
+                <label for="e-type" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Jenis Pelanggaran</label>
+                <input id="e-type" type="text" required value="${r.violation_type || ''}" class="form-input w-full px-3 py-2 rounded-lg text-sm">
+              </div>
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label for="e-category" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Kategori</label>
+                  <select id="e-category" required class="form-input w-full px-3 py-2 rounded-lg text-sm">
+                    <option value="Ringan" ${r.violation_category === 'Ringan' ? 'selected' : ''}>Ringan</option>
+                    <option value="Sedang" ${r.violation_category === 'Sedang' ? 'selected' : ''}>Sedang</option>
+                    <option value="Berat" ${r.violation_category === 'Berat' ? 'selected' : ''}>Berat</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="e-points" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Poin</label>
+                  <input id="e-points" type="number" required min="1" max="100" value="${r.points || 0}" class="form-input w-full px-3 py-2 rounded-lg text-sm">
+                </div>
+                <div>
+                  <label for="e-status" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Status</label>
+                  <select id="e-status" class="form-input w-full px-3 py-2 rounded-lg text-sm">
+                    <option value="Diproses" ${r.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                    <option value="Selesai" ${r.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                    <option value="Ditunda" ${r.status === 'Ditunda' ? 'selected' : ''}>Ditunda</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="e-reporter" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Pelapor</label>
+                  <input id="e-reporter" type="text" required value="${r.reporter || ''}" class="form-input w-full px-3 py-2 rounded-lg text-sm">
+                </div>
+                <div>
+                  <label for="e-date" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Tanggal</label>
+                  <input id="e-date" type="date" required value="${r.date ? new Date(r.date).toISOString().split('T')[0] : ''}" class="form-input w-full px-3 py-2 rounded-lg text-sm">
+                </div>
+              </div>
+              <div>
+                <label for="e-notes" class="block text-xs font-semibold mb-1" style="color: var(--text-primary);">Keterangan</label>
+                <textarea id="e-notes" rows="2" class="form-input w-full px-3 py-2 rounded-lg text-sm">${r.notes || ''}</textarea>
+              </div>
+              <div class="flex justify-end gap-3 pt-2">
+                <button type="button" class="btn-secondary px-5 py-2 rounded-lg text-sm" onclick="closeModal()">Batal</button>
+                <button type="submit" id="edit-submit-btn" class="btn-primary px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Simpan Perubahan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleEditSubmit(e, backendId) {
+      e.preventDefault();
+      const record = allRecords.find(r => r.__backendId === backendId);
+      if (!record) return;
+
+      const btn = document.getElementById('edit-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+
+      const updated = {
+        ...record,
+        student_name: document.getElementById('e-name').value.trim(),
+        student_class: document.getElementById('e-class').value.trim(),
+        violation_type: document.getElementById('e-type').value.trim(),
+        violation_category: document.getElementById('e-category').value,
+        points: parseInt(document.getElementById('e-points').value) || 0,
+        reporter: document.getElementById('e-reporter').value.trim(),
+        date: new Date(document.getElementById('e-date').value).toISOString(),
+        notes: document.getElementById('e-notes').value.trim(),
+        status: document.getElementById('e-status').value
+      };
+
+      const result = await window.dataSdk.update(updated);
+      if (result.isOk) {
+        showToast('Data berhasil diperbarui!', 'success');
+        closeModal();
+      } else {
+        showToast('Gagal memperbarui data.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Simpan Perubahan`;
+      }
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal-container');
+      modal.classList.add('hidden');
+      modal.innerHTML = '';
+    }
+
+    // ============ DATA SDK ============
+    const dataHandler = {
+      onDataChanged(data) {
+        allRecords = data;
+        renderPage();
+      }
+    };
+
+    // ============ ELEMENT SDK ============
+    async function initApp() {
+      // Init Data SDK
+      const dataResult = await window.dataSdk.init(dataHandler);
+      if (!dataResult.isOk) {
+        console.error('Data SDK init failed');
+      }
+
+      // Init Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            const bg = config.background_color || defaultConfig.background_color;
+            const surface = config.surface_color || defaultConfig.surface_color;
+            const textCol = config.text_color || defaultConfig.text_color;
+            const primary = config.primary_action_color || defaultConfig.primary_action_color;
+            const accent = config.secondary_action_color || defaultConfig.secondary_action_color;
+            const fontFamily = config.font_family || defaultConfig.font_family;
+            const fontSize = config.font_size || defaultConfig.font_size;
+
+            // Apply background
+            document.body.style.backgroundColor = bg;
+
+            // Apply text color
+            document.body.style.color = textCol;
+
+            // Apply primary (maroon) to CSS variable
+            document.documentElement.style.setProperty('--maroon', primary);
+            document.documentElement.style.setProperty('--maroon-dark', primary);
+            document.documentElement.style.setProperty('--bg-warm', bg);
+            document.documentElement.style.setProperty('--gold', accent);
+            document.documentElement.style.setProperty('--gold-dark', accent);
+            document.documentElement.style.setProperty('--text-primary', textCol);
+
+            // Apply sidebar background
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.style.background = `linear-gradient(180deg, ${primary} 0%, ${primary}cc 100%)`;
+
+            // Font
+            const baseFontStack = "'Source Sans 3', sans-serif";
+            document.querySelectorAll('.font-heading').forEach(el => {
+              el.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+            });
+
+            // Font size
+            const base = fontSize;
+            document.body.style.fontSize = `${base}px`;
+
+            // Text content from edit panel
+            const schoolName = config.school_name || defaultConfig.school_name;
+            const appTitle = config.app_title || defaultConfig.app_title;
+            const greeting = config.dashboard_greeting || defaultConfig.dashboard_greeting;
+
+            const sidebarTitle = document.getElementById('sidebar-app-title');
+            if (sidebarTitle) sidebarTitle.textContent = appTitle;
+
+            const sidebarSchool = document.getElementById('sidebar-school-name');
+            if (sidebarSchool) sidebarSchool.textContent = schoolName;
+
+            const headerGreeting = document.getElementById('header-greeting');
+            if (headerGreeting) headerGreeting.textContent = greeting;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); }
+              },
+              {
+                get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['school_name', config.school_name || defaultConfig.school_name],
+            ['app_title', config.app_title || defaultConfig.app_title],
+            ['dashboard_greeting', config.dashboard_greeting || defaultConfig.dashboard_greeting]
+          ])
+        });
+      }
+
+      renderPage();
+    }
+
+    initApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cbbb6a6a4b9a19c',t:'MTc3MDcyNzYzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
